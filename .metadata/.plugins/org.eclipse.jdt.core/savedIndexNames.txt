@@ -1,0 +1,20 @@
+INDEX VERSION 1.126+D:\Workspaces\Beerrightnow\.metadata\.plugins\org.eclipse.jdt.core
+740677117.index
+3424649090.index
+3426410740.index
+1015112835.index
+1122178717.index
+875390851.index
+2488568824.index
+305883998.index
+1721522474.index
+2731670838.index
+3159201769.index
+1491054485.index
+3742770209.index
+3065416851.index
+2644463502.index
+346109482.index
+4088677324.index
+2990670442.index
+702933315.index

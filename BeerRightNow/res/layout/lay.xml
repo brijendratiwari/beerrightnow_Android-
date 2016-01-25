@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:weightSum="2" >
+
+                    <LinearLayout
+                        android:id="@+id/top"
+                        android:layout_width="match_parent"
+                        android:layout_height="0.0dp"
+                        android:layout_weight="1.7"
+                        android:orientation="vertical"
+                        android:weightSum="2" >
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0.0dp"
+                            android:layout_weight="0.2"
+                            android:orientation="vertical" >
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:weightSum="3" >
+
+                                <LinearLayout
+                                    android:layout_width="0.0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="0.5"
+                                    android:gravity="center" >
+
+                                    <TextView
+                                        android:id="@+id/textView1th"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="5dp"
+                                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                                        android:layout_marginRight="10dp"
+                                        android:layout_marginTop="5dp"
+                                        android:text="1"
+                                        android:textAppearance="?android:attr/textAppearanceMedium"
+                                        android:textColor="@color/txt_col"
+                                        android:textStyle="bold" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginTop="10dp"
+                                    android:background="@color/signup_background"
+                                    android:orientation="vertical" >
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="0.0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="2"
+                                    android:gravity="center" >
+
+                                    <TextView
+                                        android:id="@+id/textView3th"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginRight="10dp"
+                                        android:text="2"
+                                        android:textAppearance="?android:attr/textAppearanceLarge"
+                                        android:textColor="#ff0000" />
+
+                                    <TextView
+                                        android:id="@+id/textView2th"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="5dp"
+                                        android:layout_marginTop="5dp"
+                                        android:text="Your Address"
+                                        android:textAppearance="?android:attr/textAppearanceMedium"
+                                        android:textColor="#ff0000" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginTop="10dp"
+                                    android:background="@color/signup_background"
+                                    android:orientation="vertical" >
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="0.0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="0.5"
+                                    android:gravity="center" >
+
+                                    <TextView
+                                        android:id="@+id/textView4th"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="3"
+                                        android:textAppearance="?android:attr/textAppearanceMedium"
+                                        android:textColor="@color/txt_col" />
+                                </LinearLayout>
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0.0dp"
+                            android:layout_weight="1.8"
+                            android:background="@color/signup_background"
+                            android:orientation="vertical" >
+
+                            <ScrollView
+                                android:id="@+id/scrollView1th"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent" >
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical" >
+
+                                    <LinearLayout
+                                        android:id="@+id/lltop_nameth"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical" >
+
+                                        <TextView
+                                            android:id="@+id/textView6th"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                                            android:layout_marginTop="@dimen/activity_horizontal_margin"
+                                            android:text="Add your delivery address below"
+                                            android:textAppearance="?android:attr/textAppearanceMedium"
+                                            android:textColor="@color/txt_col" />
+
+                                        <TextView
+                                            android:id="@+id/textView7th"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                                            android:text="(You can add more address later)"
+                                            android:textAppearance="?android:attr/textAppearanceMedium"
+                                            android:textColor="@color/txt_col" />
+
+                                        <EditText
+                                            android:id="@+id/edTxtAdd1"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                                            android:layout_marginRight="@dimen/activity_horizontal_margin"
+                                            android:layout_marginTop="10dp"
+                                            android:background="@drawable/edittext_back"
+                                            android:ems="10"
+                                            android:hint="Address 1"
+                                            android:inputType="text"
+                                            android:padding="10dp" />
+
+                                        <EditText
+                                            android:id="@+id/edTxtAdd2"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                                            android:layout_marginRight="@dimen/activity_horizontal_margin"
+                                            android:layout_marginTop="10dp"
+                                            android:background="@drawable/edittext_back"
+                                            android:ems="10"
+                                            android:hint="Address 2"
+                                            android:inputType="text"
+                                            android:padding="10dp" />
+
+                                        <LinearLayout
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                                            android:layout_marginRight="@dimen/activity_horizontal_margin"
+                                            android:layout_marginTop="@dimen/activity_vertical_margin"
+                                            android:gravity="center_vertical"
+                                            android:orientation="horizontal"
+                                            android:weightSum="2" >
+
+                                            <EditText
+                                                android:id="@+id/edTxtCity"
+                                                android:layout_width="0.0dp"
+                                                android:layout_height="wrap_content"
+                                                android:layout_weight="0.8"
+                                                android:background="@drawable/edittext_back"
+                                                android:hint="City"
+                                                android:inputType="textPersonName"
+                                                android:padding="10dp" />
+
+                                            <EditText
+                                                android:id="@+id/edTxtCode"
+                                                android:layout_width="0.0dp"
+                                                android:layout_height="wrap_content"
+                                                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                                                android:layout_weight="0.5"
+                                                android:background="@drawable/edittext_back"
+                                                android:ems="10"
+                                                android:hint="Code"
+                                                android:inputType="textPersonName"
+                                                android:padding="10dp" />
+
+                                            <TextView
+                                                android:id="@+id/txtZipCode"
+                                                android:layout_width="0.0dp"
+                                                android:layout_height="wrap_content"
+                                                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                                                android:layout_weight="0.5"
+                                                android:text="10001"
+                                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                                android:textColor="@color/txt_col" />
+                                        </LinearLayout>
+                                    </LinearLayout>
+                                </LinearLayout>
+                            </ScrollView>
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+        
+</LinearLayout>

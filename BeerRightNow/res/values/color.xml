@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="app_black">#373632</color>
+    <color name="c_white">#ffffff</color>
+    <color name="signup_background">#f2f1ec</color>
+    <color name="c_plus_pressed">#d6d6d5</color>
+    <color name="divider">#c8c8c8</color>
+    <color name="txt_col">#8c8c89</color>
+    <color name="clr_chng_zip">#68a400</color>
+    <color name="c_red">#cf282f</color>
+    <color name="c_red_pressed">#af080f</color>
+    <color name="c_take_pic">#f5a623</color>
+    <color name="c_rr">#fff6d9</color>
+    <color name="c_back_trans">#7f040000</color>
+    <color name="c_lst_default">#e5e5e5</color>
+    <color name="refresh_loading_color">#999999</color>
+    <color name="red">#990000</color>
+    <color name="green">#009900</color>
+    <color name="blue">#000099</color>
+    <color name="orange">#FF9900</color>
+    
+    <color name="grey">#555555</color>
+    
+    <color name="bl">#176796</color>
+ 
+     
+    
+
+</resources>

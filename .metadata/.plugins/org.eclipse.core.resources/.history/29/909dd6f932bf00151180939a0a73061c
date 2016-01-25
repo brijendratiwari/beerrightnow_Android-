@@ -1,0 +1,27 @@
+package com.beerrightnow.jon;
+
+;
+
+/** Change these values to match your setup! */
+public class Settings {
+
+	static final String UNASSIGNED_ORG_VALUE = "";
+	
+	// Google Client Id from Google API Console
+	static final String GCM_SENDER_ID = "119424828565";
+	//static final String GCM_SENDER_ID = "852979144958";
+	
+	// Notifier Name in App Services
+	//static final String NOTIFIER = "androidNotifierBRN";
+	static final String NOTIFIER = "Beerrightnow";
+
+	static final String API_URL = "https://api.usergrid.com";
+
+	static final String ORG = "tinian101";
+	// static final String ORG = "75f4029a-d452-11e4-8e3b-033d5b0fe0f7";
+	static final String APP = "beerrightnow";
+
+	// set these if you want to use a user login
+	static final String USER = null;
+	static final String PASSWORD = null;
+}

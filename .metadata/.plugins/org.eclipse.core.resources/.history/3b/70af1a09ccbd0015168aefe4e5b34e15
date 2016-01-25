@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical" >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/signup_background"
+            android:gravity="center_horizontal"
+            android:orientation="vertical" >
+
+            <RelativeLayout
+                android:id="@+id/deliveryGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/c_white"
+                android:paddingBottom="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="10dp" >
+
+                <TextView
+                    android:id="@+id/deliverytxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:text="Delivery Time"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <TextView
+                    android:id="@+id/txtExprectedDelivery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:drawablePadding="7dp"
+                    android:layout_toRightOf="@+id/deliverytxt"
+                    android:drawableRight="@drawable/forward_arrow_black"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="5dp"
+                    android:text="dgdgdgdgdgdgdgdgdgdgdgdgdgdgdgdgdgdg"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="#888688"
+                    android:textSize="14sp" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:background="@color/c_white"
+                android:orientation="vertical"
+                android:paddingBottom="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="10dp" >
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:text="Is this a Gift"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <ToggleButton
+                        android:id="@+id/tgBtnGift"
+                        android:layout_width="48dp"
+                        android:layout_height="31dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/switcher_drawable"
+                        android:textOff="@null"
+                        android:textOn="@null" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/giftGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingTop="7dp"
+                    android:visibility="gone" >
+
+                    <EditText
+                        android:id="@+id/edTxtYourNumber"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_back"
+                        android:hint="Your phone number"
+                        android:inputType="number"
+                        android:padding="7dp"
+                        android:singleLine="true"
+                        android:textColor="#888688" >
+
+                        <requestFocus />
+                    </EditText>
+
+                    <EditText
+                        android:id="@+id/edTxtReceptNumber"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/edittext_back"
+                        android:ems="10"
+                        android:hint="Receipent&apos;s phone number"
+                        android:inputType="number"
+                        android:padding="7dp"
+                        android:singleLine="true"
+                        android:textColor="#888688" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:background="@color/c_white"
+                android:orientation="vertical"
+                android:paddingBottom="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="10dp" >
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:text="Is this a Corporate Order"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <ToggleButton
+                        android:id="@+id/tgBtnCorporate"
+                        android:layout_width="48dp"
+                        android:layout_height="31dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/switcher_drawable"
+                        android:textOff="@null"
+                        android:textOn="@null" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/corporateGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingTop="7dp"
+                    android:visibility="gone" >
+
+                    <EditText
+                        android:id="@+id/edTxtRecOfficeNumber"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_back"
+                        android:hint="Receiving Office number"
+                        android:inputType="number"
+                        android:padding="7dp"
+                        android:singleLine="true"
+                        android:textColor="#888688" />
+
+                    <EditText
+                        android:id="@+id/edTxtContPerson"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/edittext_back"
+                        android:ems="10"
+                        android:hint="Contact person&apos;s name"
+                        android:padding="7dp"
+                        android:singleLine="true"
+                        android:textColor="#888688" />
+
+                    <EditText
+                        android:id="@+id/edTxtServiceEntAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/edittext_back"
+                        android:ems="10"
+                        android:hint="Service entrance address (optional)"
+                        android:padding="7dp"
+                        android:singleLine="true"
+                        android:textColor="#888688" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/roleGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:background="@color/c_white"
+                android:paddingBottom="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="10dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:text="Your Role"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <TextView
+                    android:id="@+id/txtRole"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:drawablePadding="7dp"
+                    android:drawableRight="@drawable/forward_arrow_black"
+                    android:gravity="center_vertical"
+                    android:text="Ordering for self"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="#888688" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="3dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="10dp"
+                android:text="@string/str_order_guy"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:orientation="vertical"
+                android:padding="15dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Special instructions"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <EditText
+                    android:id="@+id/edtTxtComment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/edittext_back"
+                    android:ems="10"
+                    android:gravity="top"
+                    android:lines="3"
+                    android:padding="7dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider" />
+
+    <TextView
+        android:id="@+id/txtMakePayment"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@android:color/white"
+        android:drawablePadding="7dp"
+        android:drawableRight="@drawable/forward_arrow_red"
+        android:gravity="center_vertical|right"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:text="Payment Options"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/c_red" />
+
+</LinearLayout>

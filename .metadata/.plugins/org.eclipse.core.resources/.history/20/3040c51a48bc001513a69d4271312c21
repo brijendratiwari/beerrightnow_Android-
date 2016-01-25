@@ -1,0 +1,593 @@
+package com.beerrightnow.shared;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
+public class CartInfo {
+
+	public static final String CC_CARD_TYPE = "ci_card_type";
+	public static final String CC_CARD_NUMBER = "ci_card_number";
+	public static final String CC_CVV = "ci_cvv";
+	public static final String CC_EXPIRES_YEAR = "cc_expires_year";
+	public static final String CC_EXPIRES_MONTH = "cc_expires_month";
+
+	public static final String SERVICE_TIP = "service_tip";
+	public static final String TOTAL_PAYABLE = "total_payable";
+
+	public static final String DELIVERY_EXPECTED = "delivery_expected";
+
+
+	public static final String DELIVERY_EXPECTED_BEER = "expected_beer_delivery";
+	public static final String DELIVERY_EXPECTED_LIQUOR= "expected_liquor_delivery";
+
+
+	public static final String BEER_COUNT = "beer_count";
+	public static final String LIQUOR_COUNT= "liquor_count";
+
+
+	public static final String DELIVERY_COMMENT = "deliver_comment";
+
+	public static final String BILLING_ADDRESS = "billing_address";
+	public static final String BILLING_NAME = "billing_name";
+	public static final String BILLING_CITY = "billing_city";
+	public static final String BILLING_POSTCODE = "billing_postcode";
+	public static final String BILLING_STATE = "billing_state";
+	public static final String BILLING_SUITE = "billing_suite";
+	public static final String BILLING_COUNTRY = "billing_country";
+
+	// optional
+	public static final String OPT_IS_EXECUTIVE = "opt_is_executive";
+	public static final String OPT_IS_GIFT = "opt_is_gift";
+	public static final String OPT_CUSTOMER_NUMBER = "opt_customer_number";
+	public static final String OPT_GIFT_FOR_NUMBER = "opt_gift_for_number";
+	public static final String OPT_IS_CORPORATE_ORDER = "opt_is_corporate_order";
+	public static final String OPT_OFFICE_EXTENSION = "opt_office_extension";
+	public static final String OPT_CONTACT_CELL = "opt_contact_cell";
+	public static final String OPT_SERVICE_ENTERENCE_ADDRESS = "opt_service_enterence_address";
+
+	private static final String DEFAULT_DELIVERY_EXPECTED = "ASAP";
+
+	private static final String DEFAULT_STATE = "United State";
+
+	private static final CartInfo shared = new CartInfo();
+
+	private SharedPreferences sharedPrefs;
+
+	public static CartInfo getInstance() {
+
+		return shared;
+	}
+
+	public void init(Context context) {
+
+		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+		initialize();
+	}
+
+	private void initialize() {
+
+		cardType = sharedPrefs.getInt(CC_CARD_TYPE, 0);
+		cardNumber = sharedPrefs.getString(CC_CARD_NUMBER, "");
+		cardCVV = sharedPrefs.getString(CC_CVV, "");
+		cardExpiresYear = sharedPrefs.getInt(CC_EXPIRES_YEAR, Calendar
+				.getInstance().get(Calendar.YEAR));
+		cardExpiresMonth = sharedPrefs.getInt(CC_EXPIRES_MONTH, Calendar
+				.getInstance().get(Calendar.MONTH));
+
+		serviceTip = sharedPrefs.getFloat(SERVICE_TIP, 1.0f);
+		totalPay = sharedPrefs.getFloat(TOTAL_PAYABLE, 0.0f);
+
+		deliveryExpected = sharedPrefs.getString(DELIVERY_EXPECTED,
+				DEFAULT_DELIVERY_EXPECTED);
+
+		expected_beer_delivery = sharedPrefs.getString(DELIVERY_EXPECTED_BEER,
+				"");
+		expected_liquor_delivery = sharedPrefs.getString(DELIVERY_EXPECTED_LIQUOR,
+				"");
+
+
+		deliveryComment = sharedPrefs.getString(DELIVERY_COMMENT, "");
+
+		executive = sharedPrefs.getBoolean(OPT_IS_EXECUTIVE, false);
+		gift = sharedPrefs.getBoolean(OPT_IS_GIFT, false);
+		customerNumber = sharedPrefs.getString(OPT_CUSTOMER_NUMBER, "");
+		giftForNumber = sharedPrefs.getString(OPT_GIFT_FOR_NUMBER, "");
+		corporateOrder = sharedPrefs.getBoolean(OPT_IS_CORPORATE_ORDER, false);
+		officeExtension = sharedPrefs.getString(OPT_OFFICE_EXTENSION, "");
+		contactCell = sharedPrefs.getString(OPT_CONTACT_CELL, "");
+		serviceEnterenceAddress = sharedPrefs.getString(
+				OPT_SERVICE_ENTERENCE_ADDRESS, "");
+
+		billingAddres = sharedPrefs.getString(BILLING_ADDRESS, "");
+		billingCity = sharedPrefs.getString(BILLING_CITY, "");
+		if (billingCity.isEmpty()) {
+
+			billingCity = cities().get(0);
+		}
+		billingName = sharedPrefs.getString(BILLING_NAME, "");
+		billingPostCode = sharedPrefs.getString(BILLING_POSTCODE, "");
+		billingState = sharedPrefs.getString(BILLING_STATE, "");
+
+
+		beer_count= sharedPrefs.getString(BEER_COUNT, "");
+		liquor_count = sharedPrefs.getString(LIQUOR_COUNT, "");
+
+
+		if (billingState.isEmpty()) {
+
+			billingState = DEFAULT_STATE;
+		}
+		billingSuite = sharedPrefs.getString(BILLING_SUITE, "");
+
+		billingCountry = sharedPrefs.getString(BILLING_COUNTRY, "");
+		if (billingCountry.isEmpty()) {
+
+			billingCountry = DEFAULT_STATE;
+		}
+	}
+
+	private int cardType;
+	private String cardNumber;
+	private String cardCVV;
+	private int cardExpiresYear;
+	private int cardExpiresMonth;
+	private String cardExpires;
+
+	private float serviceTip;
+	private float totalPay;
+
+	private String deliveryExpected;
+	private String deliveryComment;
+
+	private boolean executive;
+	private boolean gift;
+	private String customerNumber;
+	private String giftForNumber;
+	private boolean corporateOrder;
+	private String officeExtension;
+	private String contactCell;
+	private String serviceEnterenceAddress;
+
+	private String billingName;
+	private String billingAddres;
+	private String billingCity;
+	private String billingState;
+	private String billingPostCode;
+	private String billingSuite;
+	private String billingCountry;
+
+	private String expected_beer_delivery;
+	private String expected_liquor_delivery;
+
+
+	private String beer_count;
+	private String liquor_count;
+
+
+	public int getCardType() {
+		return cardType;
+	}
+
+	public void setCardType(int cardType) {
+		this.cardType = cardType;
+		sharedPrefs.edit().putInt(CC_CARD_TYPE, cardType).commit();
+	}
+
+	public String getCardNumber() {
+		return cardNumber;
+	}
+
+	public void setCardNumber(String cardNumber) {
+		this.cardNumber = cardNumber;
+		sharedPrefs.edit().putString(CC_CARD_NUMBER, cardNumber).commit();
+	}
+
+	public String getCardCVV() {
+		return cardCVV;
+	}
+
+	public void setCardCVV(String cardCVV) {
+		this.cardCVV = cardCVV;
+		sharedPrefs.edit().putString(CC_CVV, cardCVV).commit();
+	}
+
+	public int getCardExpiresYear() {
+		return cardExpiresYear;
+	}
+
+	public void setCardExpiresYear(int cardExpiresYear) {
+		this.cardExpiresYear = cardExpiresYear;
+		sharedPrefs.edit().putInt(CC_EXPIRES_YEAR, cardExpiresYear).commit();
+	}
+
+	public int getCardExpiresMonth() {
+		return cardExpiresMonth;
+	}
+
+	public void setCardExpiresMonth(int cardExpiresMonth) {
+		this.cardExpiresMonth = cardExpiresMonth;
+		sharedPrefs.edit().putInt(CC_EXPIRES_MONTH, cardExpiresMonth).commit();
+	}
+	
+	
+	//////////////////////
+	
+	
+	public String getBeerCount() {
+		return beer_count;
+	}
+
+	public void setBeerCount(String beer_count) {
+		this.beer_count = beer_count;
+		sharedPrefs.edit().putString(BEER_COUNT, beer_count)
+		.commit();
+	}
+	
+	
+	public String getCardExpiresMonth() {
+		return cardExpiresMonth;
+	}
+
+	public void setCardExpiresMonth(int cardExpiresMonth) {
+		this.cardExpiresMonth = cardExpiresMonth;
+		sharedPrefs.edit().putInt(CC_EXPIRES_MONTH, cardExpiresMonth).commit();
+	}
+	
+	////////////////////
+
+	public float getServiceTip() {
+		return serviceTip;
+	}
+
+	public void setServiceTip(float serviceTip) {
+		this.serviceTip = serviceTip;
+		sharedPrefs.edit().putFloat(SERVICE_TIP, serviceTip).commit();
+	}
+
+	public String getDeliveryExpected() {
+		return deliveryExpected;
+	}
+
+	public void setDeliveryExpected(String deliveryExpected) {
+		this.deliveryExpected = deliveryExpected;
+		sharedPrefs.edit().putString(DELIVERY_EXPECTED, deliveryExpected)
+		.commit();
+	}
+
+
+
+	///
+
+
+	public String getDeliveryExpected_Beer() {
+		return expected_beer_delivery;
+	}
+
+	public void setDeliveryExpected_Beer(String expected_beer_delivery) {
+		this.expected_beer_delivery = expected_beer_delivery;
+		sharedPrefs.edit().putString(DELIVERY_EXPECTED_BEER, expected_beer_delivery)
+		.commit();
+	}
+
+
+	public String getDeliveryExpected_Liquor() {
+		return expected_liquor_delivery;
+	}
+
+	public void setDeliveryExpected_Liquor(String expected_liquor_delivery) {
+		this.expected_liquor_delivery = expected_liquor_delivery;
+		sharedPrefs.edit().putString(DELIVERY_EXPECTED_LIQUOR, expected_liquor_delivery)
+		.commit();
+	}
+
+	//
+
+
+
+	public String getDeliveryComment() {
+		return deliveryComment;
+	}
+
+	public void setDeliveryComment(String deliveryComment) {
+		this.deliveryComment = deliveryComment;
+		sharedPrefs.edit().putString(DELIVERY_COMMENT, deliveryComment)
+		.commit();
+	}
+
+	public boolean isExecutive() {
+		return executive;
+	}
+
+	public void setExecutive(boolean executive) {
+		this.executive = executive;
+		sharedPrefs.edit().putBoolean(OPT_IS_EXECUTIVE, executive).commit();
+	}
+
+	public boolean isGift() {
+		return gift;
+	}
+
+	public void setGift(boolean gift) {
+		this.gift = gift;
+		sharedPrefs.edit().putBoolean(OPT_IS_GIFT, gift).commit();
+	}
+
+	public String getCustomerNumber() {
+		return customerNumber;
+	}
+
+	public void setCustomerNumber(String customerNumber) {
+		this.customerNumber = customerNumber;
+		sharedPrefs.edit().putString(OPT_CUSTOMER_NUMBER, customerNumber)
+		.commit();
+	}
+
+	public String getGiftForNumber() {
+		return giftForNumber;
+	}
+
+	public void setGiftForNumber(String giftForNumber) {
+		this.giftForNumber = giftForNumber;
+		sharedPrefs.edit().putString(OPT_GIFT_FOR_NUMBER, giftForNumber)
+		.commit();
+	}
+
+	public boolean isCorporateOrder() {
+		return corporateOrder;
+	}
+
+	public void setCorporateOrder(boolean corporateOrder) {
+		this.corporateOrder = corporateOrder;
+		sharedPrefs.edit().putBoolean(OPT_IS_CORPORATE_ORDER, corporateOrder)
+		.commit();
+	}
+
+	public String getOfficeExtension() {
+		return officeExtension;
+	}
+
+	public void setOfficeExtension(String officeExtension) {
+		this.officeExtension = officeExtension;
+		sharedPrefs.edit().putString(OPT_OFFICE_EXTENSION, officeExtension)
+		.commit();
+	}
+
+	public String getContactCell() {
+		return contactCell;
+	}
+
+	public void setContactCell(String contactCell) {
+		this.contactCell = contactCell;
+		sharedPrefs.edit().putString(OPT_CONTACT_CELL, contactCell).commit();
+	}
+
+	public String getServiceEnterenceAddress() {
+		return serviceEnterenceAddress;
+	}
+
+	public void setServiceEnterenceAddress(String serviceEnterenceAddress) {
+		this.serviceEnterenceAddress = serviceEnterenceAddress;
+		sharedPrefs
+		.edit()
+		.putString(OPT_SERVICE_ENTERENCE_ADDRESS,
+				serviceEnterenceAddress).commit();
+	}
+
+	public String getBillingName() {
+		return billingName;
+	}
+
+	public void setBillingName(String billingName) {
+		this.billingName = billingName;
+		sharedPrefs.edit().putString(BILLING_NAME, billingName).commit();
+	}
+
+	public String getBillingAddres() {
+		return billingAddres;
+	}
+
+	public void setBillingAddres(String billingAddres) {
+		this.billingAddres = billingAddres;
+		sharedPrefs.edit().putString(BILLING_ADDRESS, billingAddres).commit();
+	}
+
+	public String getBillingCity() {
+		return billingCity;
+	}
+
+	public void setBillingCity(String billingCity) {
+		this.billingCity = billingCity;
+		sharedPrefs.edit().putString(BILLING_CITY, billingCity).commit();
+	}
+
+	public String getBillingState() {
+		return billingState;
+	}
+
+	public void setBillingState(String billingState) {
+		this.billingState = billingState;
+		sharedPrefs.edit().putString(BILLING_STATE, billingState).commit();
+	}
+
+	public String getBillingSuite() {
+		return billingSuite;
+	}
+
+	public void setBillingSuite(String billingSuite) {
+		this.billingSuite = billingSuite;
+		sharedPrefs.edit().putString(BILLING_SUITE, billingSuite).commit();
+	}
+
+	public String getBillingCountry() {
+		return billingCountry;
+	}
+
+	public void setBillingCountry(String billingCountry) {
+		this.billingCountry = billingCountry;
+		sharedPrefs.edit().putString(BILLING_COUNTRY, billingCountry).commit();
+	}
+
+	public String getBillingPostCode() {
+		return billingPostCode;
+	}
+
+	public void setBillingPostCode(String billingPostCode) {
+		this.billingPostCode = billingPostCode;
+		sharedPrefs.edit().putString(BILLING_POSTCODE, billingPostCode)
+		.commit();
+	}
+
+	public float getTotalPay() {
+		return totalPay;
+	}
+
+	public void setTotalPay(float totalPay) {
+		this.totalPay = totalPay;
+		sharedPrefs.edit().putFloat(TOTAL_PAYABLE, totalPay).commit();
+	}
+
+	public String getCardExpires() {
+		return cardExpires;
+	}
+
+	public void setCardExpires(String cardExpires) {
+		this.cardExpires = cardExpires;
+	}
+
+	public void clear() {
+
+		sharedPrefs.edit().remove(CC_CARD_TYPE).commit();
+		sharedPrefs.edit().remove(CC_CARD_NUMBER).commit();
+		sharedPrefs.edit().remove(CC_CVV).commit();
+		sharedPrefs.edit().remove(CC_EXPIRES_MONTH).commit();
+		sharedPrefs.edit().remove(CC_EXPIRES_YEAR).commit();
+
+		sharedPrefs.edit().remove(SERVICE_TIP).commit();
+		sharedPrefs.edit().remove(TOTAL_PAYABLE).commit();
+
+		sharedPrefs.edit().remove(DELIVERY_EXPECTED).commit();
+		sharedPrefs.edit().remove(DELIVERY_COMMENT).commit();
+
+		sharedPrefs.edit().remove(DELIVERY_EXPECTED_BEER).commit();
+		sharedPrefs.edit().remove(DELIVERY_EXPECTED_LIQUOR).commit();
+
+		sharedPrefs.edit().remove(OPT_CONTACT_CELL).commit();
+		sharedPrefs.edit().remove(OPT_CUSTOMER_NUMBER).commit();
+		sharedPrefs.edit().remove(OPT_GIFT_FOR_NUMBER).commit();
+		sharedPrefs.edit().remove(OPT_IS_CORPORATE_ORDER).commit();
+		sharedPrefs.edit().remove(OPT_IS_EXECUTIVE).commit();
+		sharedPrefs.edit().remove(OPT_IS_GIFT).commit();
+		sharedPrefs.edit().remove(OPT_OFFICE_EXTENSION).commit();
+		sharedPrefs.edit().remove(OPT_SERVICE_ENTERENCE_ADDRESS).commit();
+
+		sharedPrefs.edit().remove(BILLING_ADDRESS).commit();
+		sharedPrefs.edit().remove(BILLING_CITY).commit();
+		sharedPrefs.edit().remove(BILLING_NAME).commit();
+		sharedPrefs.edit().remove(BILLING_POSTCODE).commit();
+		sharedPrefs.edit().remove(BILLING_STATE).commit();
+		sharedPrefs.edit().remove(BILLING_SUITE).commit();
+		sharedPrefs.edit().remove(BILLING_COUNTRY).commit();
+
+		initialize();
+	}
+
+	public void orderProcessed() {
+
+		sharedPrefs.edit().remove(SERVICE_TIP).commit();
+		sharedPrefs.edit().remove(TOTAL_PAYABLE).commit();
+
+		sharedPrefs.edit().remove(DELIVERY_EXPECTED).commit();
+		sharedPrefs.edit().remove(DELIVERY_COMMENT).commit();
+
+
+		sharedPrefs.edit().remove(DELIVERY_EXPECTED_BEER).commit();
+		sharedPrefs.edit().remove(DELIVERY_EXPECTED_LIQUOR).commit();
+
+		sharedPrefs.edit().remove(OPT_CONTACT_CELL).commit();
+		sharedPrefs.edit().remove(OPT_CUSTOMER_NUMBER).commit();
+		sharedPrefs.edit().remove(OPT_GIFT_FOR_NUMBER).commit();
+		sharedPrefs.edit().remove(OPT_IS_CORPORATE_ORDER).commit();
+		sharedPrefs.edit().remove(OPT_IS_EXECUTIVE).commit();
+		sharedPrefs.edit().remove(OPT_IS_GIFT).commit();
+		sharedPrefs.edit().remove(OPT_OFFICE_EXTENSION).commit();
+		sharedPrefs.edit().remove(OPT_SERVICE_ENTERENCE_ADDRESS).commit();
+
+		initialize();
+	}
+
+	public List<String> cities() {
+
+		ArrayList<String> cityArr = new ArrayList<String>();
+		cityArr.add("Alabama");
+		cityArr.add("Alaska");
+		cityArr.add("American Samoa");
+		cityArr.add("Arizona");
+		cityArr.add("Arkansas");
+		cityArr.add("Armed Forces Africa");
+		cityArr.add("Armed Forces Americas");
+		cityArr.add("Armed Forces Canada");
+		cityArr.add("Armed Forces Europe");
+		cityArr.add("Armed Forces Middle East");
+		cityArr.add("Armed Forces Pacific");
+		cityArr.add("California");
+		cityArr.add("Colorado");
+		cityArr.add("Connecticut");
+		cityArr.add("Delaware");
+		cityArr.add("District of Columbia");
+		cityArr.add("Federated States Of Micronesia");
+		cityArr.add("Florida");
+		cityArr.add("Georgia");
+		cityArr.add("Guam");
+		cityArr.add("Hawaii");
+		cityArr.add("Idaho");
+		cityArr.add("Illinois");
+		cityArr.add("Indiana");
+		cityArr.add("Iowa");
+		cityArr.add("Kansas");
+		cityArr.add("Kentucky");
+		cityArr.add("Louisiana");
+		cityArr.add("Maine");
+		cityArr.add("Marshall Islands");
+		cityArr.add("Maryland");
+		cityArr.add("Massachusetts");
+		cityArr.add("Michigan");
+		cityArr.add("Minnesota");
+		cityArr.add("Mississippi");
+		cityArr.add("Missouri");
+		cityArr.add("Montana");
+		cityArr.add("Nebraska");
+		cityArr.add("Nevada");
+		cityArr.add("New Hampshire");
+		cityArr.add("New Jersey");
+		cityArr.add("New Mexico");
+		cityArr.add("New York");
+		cityArr.add("North Carolina");
+		cityArr.add("Northen Mariana Islands");
+		cityArr.add("Ohio");
+		cityArr.add("Oklahoma");
+		cityArr.add("Oregon");
+		cityArr.add("Palau");
+		cityArr.add("Pennsylvania");
+		cityArr.add("Puerto Rico");
+		cityArr.add("Rhode Island");
+		cityArr.add("South Carolina");
+		cityArr.add("South Dakota");
+		cityArr.add("Tennessee");
+		cityArr.add("Texas");
+		cityArr.add("Utah");
+		cityArr.add("Vermont");
+		cityArr.add("Virgin Islands");
+		cityArr.add("Virginia");
+		cityArr.add("Washington");
+		cityArr.add("West Virginia");
+		cityArr.add("Wisconsin");
+		cityArr.add("Wyoming");
+		return cityArr;
+	}
+}

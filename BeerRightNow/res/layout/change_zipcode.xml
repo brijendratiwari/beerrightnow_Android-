@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/c_white"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="15dp" >
+
+        <EditText
+            android:id="@+id/edTxtChngZip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/edittext_back"
+            android:ems="10"
+            android:hint="Enter Your ZipCode"
+            android:inputType="number"
+            android:padding="10dp"
+            android:textColor="@android:color/black" >
+
+            <requestFocus />
+        </EditText>
+
+        <Button
+            android:id="@+id/btnChngZip"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/btn_selector"
+            android:text="GO"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="bottom"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
+            android:text="@string/str_drink"
+            android:textColor="#070707"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,110 @@
+package com.beerrightnow.jon;
+
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
+import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.MenuItem;
+import com.beerrightnow.utility.Utils;
+
+public class TakeBreak extends SherlockActivity {
+
+	private static final String TAKE_URL = "http://www.iwantbeerrightnow.com/blog/";
+	private ProgressDialog loadingDialog;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.take_break);
+
+		init();
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		if (item.getItemId() == android.R.id.home) {
+			finish();
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	@SuppressLint("SetJavaScriptEnabled") private void init() {
+		// TODO Auto-generated method stub
+
+		ActionBar ab = getSupportActionBar();
+		ab.setCustomView(R.layout.something_abt_you);
+		ab.setDisplayShowCustomEnabled(true);
+		ab.setDisplayShowHomeEnabled(true);
+		ab.setHomeButtonEnabled(true);
+		ab.setIcon(R.drawable.head_back);
+		ab.setBackgroundDrawable(new ColorDrawable(getResources().getColor(
+				R.color.app_black)));
+		TextView title = (TextView) findViewById(R.id.txtHeaderTitle);
+		title.setText("Take a break");
+
+		View relCart = findViewById(R.id.relCart);
+		relCart.setVisibility(View.GONE);
+
+		ImageView imgShare = (ImageView) findViewById(R.id.imgShare);
+		imgShare.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+
+				Utils.getInstance().share(TakeBreak.this);
+			}
+		});
+
+		WebView webView = (WebView) findViewById(R.id.webView);
+	
+		webView.getSettings().setJavaScriptEnabled(true);
+		webView.loadUrl(TAKE_URL);
+		webView.getSettings().setBlockNetworkLoads(true);
+		webView.freeMemory();
+		webView.setWebViewClient(new WebViewClient() {
+
+			public void onPageStarted(WebView view, String url, Bitmap favicon) {
+
+				loadingDialog = ProgressDialog.show(TakeBreak.this, "", "");
+				loadingDialog.setContentView(new ProgressBar(TakeBreak.this));
+			}
+
+			public void onPageFinished(WebView view, String url) {
+
+				try {
+
+					loadingDialog.dismiss();
+					view.getSettings().setBlockNetworkLoads(false);
+				} catch (NullPointerException e) {
+
+					e.printStackTrace();
+				}
+			}
+
+			public void onReceivedError(WebView view, int errorCode,
+					String description, String failingUrl) {
+				try {
+
+					loadingDialog.dismiss();
+				} catch (NullPointerException e) {
+
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+}

@@ -1,0 +1,79 @@
+package com.beerrightnow.jon;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.view.WindowManager;
+
+import com.beerrightnow.fragment.OnSignFlowManager;
+import com.google.android.gcm.GCMRegistrar;
+
+public class SignUpActivity extends FragmentActivity implements
+		OnSignFlowManager {
+
+	public static final int SIGN_REQUEST = 0713;
+
+	private Bundle bundle = new Bundle();
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.signup);
+		getWindow().setSoftInputMode(
+				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+		
+		 // this is a hack to force AsyncTask to be initialized on main thread. Without this things
+	    // won't work correctly on older versions of Android (2.2, apilevel=8)
+	    try {
+	    	Class.forName("android.os.AsyncTask");
+	    } catch (Exception ignored) {}
+	    
+	    GCMRegistrar.checkDevice(this);
+	    GCMRegistrar.checkManifest(this);
+
+	   
+
+	    AppServices.loginAndRegisterForPush(this);
+	}
+
+	@Override
+	public void onWillEnter(Fragment fragment) {
+		// TODO Auto-generated method stub
+
+		try {
+
+			FragmentManager fm = getSupportFragmentManager();
+			FragmentTransaction transaction = fm.beginTransaction();
+			transaction.setCustomAnimations(R.anim.enter_from_right,
+					R.anim.slightly_exit_to_left,
+					R.anim.slightly_enter_from_left, R.anim.exit_to_right);
+			transaction.replace(R.id.signUpFrag, fragment);
+			transaction.addToBackStack(null);
+			transaction.commit();
+		} catch (NullPointerException e) {
+
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public Bundle getBundle() {
+		// TODO Auto-generated method stub
+		return bundle;
+	}
+
+	@Override
+	public void onComplete() {
+		// TODO Auto-generated method stub
+
+		Intent result = new Intent();
+		result.putExtra(OnSignFlowManager.SIGN_BUNDLE, getBundle());
+		setResult(RESULT_OK, result);
+		finish();
+	}
+
+}

@@ -1,0 +1,727 @@
+package com.beerrightnow.jon;
+
+import java.util.ArrayList;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.MenuItem;
+import com.beerrightnow.data.CartProduct;
+import com.beerrightnow.data.CartResponse;
+import com.beerrightnow.data.OtherCharge;
+import com.beerrightnow.shared.CartInfo;
+import com.beerrightnow.shared.LoginInfo;
+import com.beerrightnow.task.GetCartTask;
+import com.beerrightnow.task.GetCartTask.CallbackCart;
+import com.beerrightnow.utility.Constants;
+import com.beerrightnow.utility.DimensionUtils;
+import com.beerrightnow.utility.HttpServer;
+import com.beerrightnow.utility.Utils;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
+
+public class ShopingCart extends SherlockActivity {
+
+	private static final String COUPON_TYPE_S = "S";
+	private static final String COUPON_TYPE_F = "F";
+
+	private EditText editCoupanCode;
+	private TextView txtOrderTotal;
+	private TextView txtCoupan;
+	private TextView txtDiscountFee;
+	private TextView txtTip;
+	private TextView txtTotalAmt;
+	private View discountGroup;
+	private LinearLayout contentView;
+
+	private CartResponse cartResponse;
+	private JSONArray notifi;
+	private float couponAmount = 0.0f;
+	// private float depositAmount;
+
+	private DisplayImageOptions options = new DisplayImageOptions.Builder()
+			.showImageOnLoading(R.drawable.stub)
+			.showImageForEmptyUri(R.drawable.stub)
+			.showImageOnFail(R.drawable.stub).cacheOnDisk(true)
+			.resetViewBeforeLoading(true).bitmapConfig(Bitmap.Config.RGB_565)
+			.imageScaleType(ImageScaleType.IN_SAMPLE_INT)
+			.considerExifParams(true).displayer(new SimpleBitmapDisplayer())
+			.build();
+
+	private Handler mHandler = new Handler();
+
+	private Runnable mTipDecTask = new Runnable() {
+		public void run() {
+
+			try {
+
+				float tipAmount = Float.parseFloat(txtTip.getText().toString());
+				if (tipAmount > 0) {
+
+					tipAmount--;
+					txtTip.setText(Integer.valueOf((int) tipAmount).toString());
+
+					txtOrderTotal.setText("$"
+							+ Utils.getInstance().convertToDecimalPointString(
+									getTotalWithTips(), 2));
+					txtTotalAmt.setText(txtOrderTotal.getText());
+					CartInfo.getInstance().setServiceTip(tipAmount);
+				}
+			} catch (NullPointerException e) {
+
+				e.printStackTrace();
+			}
+			mHandler.postDelayed(this, Constants.REPEAT_CLICK_TIME);
+		}
+	};
+
+	private Runnable mTipIncTask = new Runnable() {
+		public void run() {
+
+			try {
+
+				float tipAmount = Float.parseFloat(txtTip.getText().toString());
+				tipAmount++;
+				txtTip.setText(Integer.valueOf((int) tipAmount).toString());
+
+				txtOrderTotal.setText("$"
+						+ Utils.getInstance().convertToDecimalPointString(
+								getTotalWithTips(), 2));
+				txtTotalAmt.setText(txtOrderTotal.getText());
+
+				CartInfo.getInstance().setServiceTip(tipAmount);
+
+			} catch (NullPointerException e) {
+
+				e.printStackTrace();
+			}
+
+			mHandler.postDelayed(this, Constants.REPEAT_CLICK_TIME);
+		}
+	};
+
+	private CallbackCart cartCallback = new CallbackCart() {
+
+		@Override
+		public void onCartResponse(CartResponse response,JSONArray notifi_array) {
+			// TODO Auto-generated method stub
+
+			try {
+
+				if (response != null) {
+
+					notifi=notifi_array;
+					cartResponse = response;
+					contentView.removeAllViews();
+					addToView();
+				} else {
+
+					contentView.removeAllViews();
+					finish();
+					Toast.makeText(ShopingCart.this,
+							R.string.no_proudcts_in_cart, Toast.LENGTH_SHORT)
+							.show();
+				}
+			} catch (NullPointerException e) {
+
+				e.printStackTrace();
+			}
+		}
+
+		
+
+	};
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.shopping_cart);
+
+		getWindow().setSoftInputMode(
+				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+		init();
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		if (item.getItemId() == android.R.id.home) {
+			finish();
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	private void init() {
+		// TODO Auto-generated method stub
+
+		contentView = (LinearLayout) findViewById(R.id.contentView);
+
+		ActionBar ab = getSupportActionBar();
+		ab.setCustomView(R.layout.something_abt_you);
+		ab.setDisplayShowCustomEnabled(true);
+		ab.setDisplayShowHomeEnabled(true);
+		ab.setHomeButtonEnabled(true);
+		ab.setIcon(R.drawable.back);
+		ab.setBackgroundDrawable(new ColorDrawable(getResources().getColor(
+				R.color.app_black)));
+
+		TextView title = (TextView) findViewById(R.id.txtHeaderTitle);
+		title.setText("Shopping Cart");
+		View relCart = findViewById(R.id.relCart);
+		relCart.setVisibility(View.GONE);
+
+		ImageView imgShare = (ImageView) findViewById(R.id.imgShare);
+		imgShare.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+
+				Utils.getInstance().share(ShopingCart.this);
+			}
+		});
+		TextView txtShippingInfo = (TextView) findViewById(R.id.txtShippingInfo);
+		txtShippingInfo.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				if(notifi.length()>0)
+				{String value;
+					for (int i = 0; i < notifi.length(); i++) {
+						try {
+							value  =  (String) notifi.get(i);
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						}
+					
+					Toast.makeText(ShopingCart.this, value, Toast.LENGTH_SHORT).show();
+				}
+				else
+				{
+					CartInfo.getInstance().setTotalPay(getTotalWithTips());
+					startActivity(new Intent(ShopingCart.this,
+							ShippingAddress.class));
+				}
+				
+				
+			}
+
+		});
+
+		editCoupanCode = (EditText) findViewById(R.id.edTxtPromoCode);
+
+		Button btnApply = (Button) findViewById(R.id.btnApply);
+		btnApply.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+
+				String coupanCode = editCoupanCode.getText().toString();
+				if (coupanCode.isEmpty()) {
+					Toast.makeText(getApplicationContext(),
+							R.string.fill_coupan, Toast.LENGTH_SHORT).show();
+				} else {
+					new CouponcodeTask().execute();
+				}
+			}
+
+		});
+
+		new GetCartTask(this, cartCallback).execute();
+
+	}
+
+	private View makeCartRowView(boolean isShownStoreName, String storeName,
+			CartProduct cartProduct, boolean isBeer) {
+
+		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View cartRowView = inflater.inflate(R.layout.row_cart_product, null);
+
+		if (cartProduct == null)
+			return cartRowView;
+
+		if (!isShownStoreName) {
+
+			View storeNameGroup = cartRowView.findViewById(R.id.storeNameGroup);
+			storeNameGroup.setVisibility(View.GONE);
+		} else {
+
+			TextView txtStoreName = (TextView) cartRowView
+					.findViewById(R.id.txtStoreName);
+			txtStoreName.setText(storeName);
+
+			TextView txtStoreAmt = (TextView) cartRowView
+					.findViewById(R.id.txtStoreAmt);
+
+			txtStoreAmt.setText("$"
+					+ Utils.getInstance().convertToDecimalPointString(
+							isBeer ? cartResponse.getUtilMethod()
+									.getBeersPrice() : cartResponse
+									.getUtilMethod().getLiquorsPrice(), 2));
+
+		}
+
+		ImageView imgDelProduct = (ImageView) cartRowView
+				.findViewById(R.id.imgDelProduct);
+		imgDelProduct.setTag(cartProduct.getProductsId());
+		imgDelProduct.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+
+				removeProduct((String) v.getTag());
+			}
+		});
+
+		if (cartProduct.getOtherCharges().isEmpty()) {
+
+			View otherGroup = cartRowView.findViewById(R.id.otherGroup);
+			otherGroup.setVisibility(View.GONE);
+		} else {
+
+			try {
+
+				OtherCharge deposit = cartProduct.getOtherCharges().get(0);
+				OtherCharge other = cartProduct.getOtherCharges().get(1);
+
+				TextView txtOtherTitle1 = (TextView) cartRowView
+						.findViewById(R.id.txtOtherTitle1);
+				txtOtherTitle1.setText(deposit.getProductsOptionsName());
+
+				TextView txtOtherValue1 = (TextView) cartRowView
+						.findViewById(R.id.txtOtherValue1);
+				txtOtherValue1.setText("$"
+						+ Utils.getInstance().convertToDecimalPointString(
+								deposit.getOptionsValuesPrice(), 2));
+
+				TextView txtOtherTitle2 = (TextView) cartRowView
+						.findViewById(R.id.txtOtherTitle2);
+				txtOtherTitle2.setText(other.getProductsOptionsName());
+
+				TextView txtOtherValue2 = (TextView) cartRowView
+						.findViewById(R.id.txtOtherValue2);
+				txtOtherValue2.setText("$"
+						+ Utils.getInstance().convertToDecimalPointString(
+								other.getOptionsValuesPrice(), 2));
+			} catch (IndexOutOfBoundsException e) {
+
+				e.printStackTrace();
+			}
+		}
+
+		TextView txtProAmt = (TextView) cartRowView
+				.findViewById(R.id.txtProAmt);
+		txtProAmt.setText("$ " + cartProduct.getProductsPrice());
+
+		TextView txtProName = (TextView) cartRowView
+				.findViewById(R.id.txtCartProName);
+		TextView txtProSize = (TextView) cartRowView
+				.findViewById(R.id.txtCartProSize);
+		String wholeName = cartProduct.getProductsName();
+		String[] names;
+		if (wholeName.contains(",")) {
+			names = wholeName.split(",");
+		} else {
+			names = new String[] { wholeName, "" };
+		}
+		txtProName.setSelected(true);
+		txtProName.setText(names[0]);
+		txtProSize.setText(names[1]);
+
+		final TextView txtDispQty = (TextView) cartRowView
+				.findViewById(R.id.txtDispQty);
+		txtDispQty.setText(cartProduct.getProductCount());
+
+		ImageView imgCartProduct = (ImageView) cartRowView
+				.findViewById(R.id.imgCartProduct);
+		ImageLoader.getInstance().displayImage(cartProduct.getProductsImage(),
+				imgCartProduct, options);
+
+		View txtDecrease = cartRowView.findViewById(R.id.txtDecrease);
+		txtDecrease.setTag(cartProduct.getProductsId());
+		txtDecrease.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+
+				int productCount = Integer.parseInt(txtDispQty.getText()
+						.toString());
+				if (productCount > 1)
+					txtDispQty.setText(Integer.valueOf(--productCount)
+							.toString());
+
+				LoginInfo.getInstance().addProductToCart((String) v.getTag(),
+						txtDispQty.getText().toString());
+				new GetCartTask(ShopingCart.this, cartCallback).execute();
+			}
+
+		});
+
+		View txtIncrease = cartRowView.findViewById(R.id.txtIncrease);
+		txtIncrease.setTag(cartProduct.getProductsId());
+		txtIncrease.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+
+				int productCount = Integer.parseInt(txtDispQty.getText()
+						.toString());
+				txtDispQty.setText(Integer.valueOf(++productCount).toString());
+
+				LoginInfo.getInstance().addProductToCart((String) v.getTag(),
+						txtDispQty.getText().toString());
+				new GetCartTask(ShopingCart.this, cartCallback).execute();
+			}
+
+		});
+
+		return cartRowView;
+	}
+
+	private void addToView() {
+
+		// depositAmount = 0.0f;
+
+		if (!cartResponse.getBeer().getProducts().isEmpty()) {
+
+			TextView headView = new TextView(this);
+
+			headView.setText("Beer Products");
+			headView.setTextColor(Color.BLACK);
+			headView.setTypeface(Utils.getInstance().getKalingaType(),
+					Typeface.BOLD_ITALIC);
+			int paddingInPixel = DimensionUtils.getInstance().DpiToPixel(15);
+			headView.setPadding(paddingInPixel, paddingInPixel, paddingInPixel,
+					paddingInPixel);
+			contentView.addView(headView);
+
+			boolean isShownStoreName = true;
+			for (CartProduct beerProduct : cartResponse.getBeer().getProducts()) {
+				contentView.addView(makeCartRowView(isShownStoreName,
+						cartResponse.getBeer().getStore(), beerProduct, true));
+				isShownStoreName = false;
+
+				// if (!beerProduct.getOtherCharges().isEmpty()) {
+				//
+				// OtherCharge depositCharge = beerProduct.getOtherCharges()
+				// .get(0);
+				// depositAmount += depositCharge.getOptionsValuesPrice();
+				//
+				// }
+			}
+
+		}
+		if (!cartResponse.getLiquor().getProducts().isEmpty()) {
+
+			TextView headView = new TextView(this);
+
+			headView.setText("Liquor Products");
+			headView.setTextColor(Color.BLACK);
+			headView.setTypeface(Utils.getInstance().getKalingaType(),
+					Typeface.BOLD_ITALIC);
+			int paddingInPixel = DimensionUtils.getInstance().DpiToPixel(15);
+			headView.setPadding(paddingInPixel, paddingInPixel, paddingInPixel,
+					paddingInPixel);
+			contentView.addView(headView);
+
+			boolean isShownStoreName = true;
+			for (CartProduct liquorProduct : cartResponse.getLiquor()
+					.getProducts()) {
+				contentView.addView(makeCartRowView(isShownStoreName,
+						cartResponse.getLiquor().getStore(), liquorProduct,
+						false));
+				isShownStoreName = false;
+
+				// if (!liquorProduct.getOtherCharges().isEmpty()) {
+				//
+				// OtherCharge depositCharge = liquorProduct.getOtherCharges()
+				// .get(0);
+				// depositAmount += depositCharge.getOptionsValuesPrice();
+				// }
+			}
+
+		}
+
+		TextView txtTotProd = (TextView) findViewById(R.id.txtTotalProducts);
+		txtTotProd.setText(Integer.valueOf(
+				cartResponse.getUtilMethod().getProductCount()).toString());
+
+		TextView txtTotStore = (TextView) findViewById(R.id.txtTotStore);
+		txtTotStore.setText(Integer.valueOf(
+				cartResponse.getUtilMethod().getStoreCount()).toString());
+
+		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+		// for summary
+		View summaryView = inflater.inflate(R.layout.cart_footer, null);
+		txtCoupan = (TextView) summaryView.findViewById(R.id.txtCoupan);
+		txtDiscountFee = (TextView) summaryView
+				.findViewById(R.id.txtDiscountFee);
+		discountGroup = summaryView.findViewById(R.id.discountGroup);
+
+		View beerGroup = summaryView.findViewById(R.id.beerGroup);
+		View liquorGroup = summaryView.findViewById(R.id.liquorGroup);
+
+		TextView txtBeerTotal = (TextView) summaryView
+				.findViewById(R.id.txtTotBeerItems);
+		txtBeerTotal.setText("$"
+				+ Utils.getInstance().convertToDecimalPointString(
+						cartResponse.getUtilMethod().getBeersPrice(), 2));
+		if (cartResponse.getBeer().getProducts().isEmpty())
+			beerGroup.setVisibility(View.GONE);
+
+		TextView txtLiqTotal = (TextView) summaryView
+				.findViewById(R.id.txtTotLiqItems);
+		txtLiqTotal.setText("$"
+				+ Utils.getInstance().convertToDecimalPointString(
+						cartResponse.getUtilMethod().getLiquorsPrice(), 2));
+		if (cartResponse.getLiquor().getProducts().isEmpty())
+			liquorGroup.setVisibility(View.GONE);
+
+		TextView txtTaxAmt = (TextView) summaryView
+				.findViewById(R.id.txtTaxAmount);
+		float taxes = cartResponse.getUtilMethod().getBeersTax()
+				+ cartResponse.getUtilMethod().getLiquorsTax();
+		txtTaxAmt.setText("$"
+				+ Utils.getInstance().convertToDecimalPointString(taxes, 2));
+
+		txtTip = (TextView) summaryView.findViewById(R.id.txtTip);
+
+		float defaultTips = cartResponse.getUtilMethod().getProductsTotal() * 0.1f;
+		CartInfo.getInstance().setServiceTip(defaultTips);
+		txtTip.setText(Integer.toString(Math.round(defaultTips)).toString());
+
+		TextView txtConvenienceFee = (TextView) summaryView
+				.findViewById(R.id.txtConvenienceFee);
+		txtConvenienceFee.setText("$"
+				+ Utils.getInstance().convertToDecimalPointString(
+						cartResponse.getConvenienceFee(), 2));
+
+		txtDiscountFee = (TextView) summaryView
+				.findViewById(R.id.txtDiscountFee);
+
+		View otherGroup = summaryView.findViewById(R.id.otherGroup);
+		otherGroup.setVisibility(View.GONE);
+		if (!cartResponse.getBeer().getHasKegs()) {
+
+			View pickupGroup = summaryView.findViewById(R.id.pickupGroup);
+			pickupGroup.setVisibility(View.GONE);
+		} else {
+
+			// TextView txtOtherTitle1 = (TextView) summaryView
+			// .findViewById(R.id.txtOtherTitle1);
+			// txtOtherTitle1.setText("Refundable Deposit");
+			//
+			// TextView txtOtherValue1 = (TextView) summaryView
+			// .findViewById(R.id.txtOtherValue1);
+			// txtOtherValue1.setText("$"
+			// + Utils.getInstance().convertToDecimalPointString(
+			// depositAmount, 2));
+
+			TextView txtPickupFee = (TextView) summaryView
+					.findViewById(R.id.txtPickupFee);
+
+			txtPickupFee.setText("$"
+					+ Utils.getInstance().convertToDecimalPointString(
+							cartResponse.getUtilMethod().getPickupFee(), 2));
+
+		}
+
+		txtTotalAmt = (TextView) findViewById(R.id.txtTotalAmount);
+		txtTotalAmt.setText("$"
+				+ Utils.getInstance().convertToDecimalPointString(
+						getTotalWithTips(), 2));
+		txtOrderTotal = (TextView) summaryView.findViewById(R.id.txtOrderTotal);
+		txtOrderTotal.setText("$"
+				+ Utils.getInstance().convertToDecimalPointString(
+						getTotalWithTips(), 2));
+		View txtTipDecr = summaryView.findViewById(R.id.txtTipDecr);
+		txtTipDecr.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				// TODO Auto-generated method stub
+				int action = event.getAction();
+				if (action == MotionEvent.ACTION_DOWN) {
+					mHandler.post(mTipDecTask);
+					return true;
+				}
+
+				if (action == MotionEvent.ACTION_UP
+						|| action == MotionEvent.ACTION_CANCEL) {
+					mHandler.removeCallbacks(mTipDecTask);
+				}
+				return false;
+			}
+
+		});
+
+		View txtTipIncr = summaryView.findViewById(R.id.txtTipIncr);
+		txtTipIncr.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				// TODO Auto-generated method stub
+				int action = event.getAction();
+				if (action == MotionEvent.ACTION_DOWN) {
+					mHandler.post(mTipIncTask);
+					return true;
+				}
+
+				if (action == MotionEvent.ACTION_UP
+						|| action == MotionEvent.ACTION_CANCEL) {
+
+					mHandler.removeCallbacks(mTipIncTask);
+				}
+				return false;
+			}
+
+		});
+
+		contentView.addView(summaryView);
+
+	}
+
+	private float getTotalWithTips() {
+		try {
+
+			float total = cartResponse.getUtilMethod().getTotal();
+			total += Float.parseFloat(txtTip.getText().toString());
+			// total += depositAmount;
+			total += couponAmount;
+			return total;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+
+	private void removeProduct(String productId) {
+		// TODO Auto-generated method stub
+
+		LoginInfo.getInstance().removeRroductFromCart(productId);
+		new GetCartTask(this, cartCallback).execute();
+	}
+
+	public class CouponcodeTask extends AsyncTask<Void, Void, String> {
+
+		ProgressDialog pd;
+
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+			pd = ProgressDialog.show(ShopingCart.this, "", "");
+			pd.setContentView(new ProgressBar(ShopingCart.this));
+
+		}
+
+		@Override
+		protected String doInBackground(Void... params) {
+			// TODO Auto-generated method stub
+			ArrayList<NameValuePair> arrParams = new ArrayList<NameValuePair>();
+			arrParams.add(new BasicNameValuePair("coupon_code", editCoupanCode
+					.getText().toString()));
+			arrParams.add(new BasicNameValuePair(
+					Constants.DataKeys.DISTRIBUTOR_ID, LoginInfo.getInstance()
+							.getDistributorId()));
+			arrParams.add(new BasicNameValuePair(
+					Constants.DataKeys.LRN_DISTRIBUTOR_ID, LoginInfo
+							.getInstance().getLrnDistributorId()));
+			arrParams.add(new BasicNameValuePair(Constants.DataKeys.ZIP_CODE,
+					LoginInfo.getInstance().getZipCode()));
+			return HttpServer.httpCall(HttpServer.POST,
+					HttpServer.RequestAPI.CHECK_COUPON_CODE, arrParams);
+
+		}
+
+		@Override
+		protected void onPostExecute(String response) {
+			// TODO Auto-generated method stub
+			pd.dismiss();
+
+			if (response.isEmpty()) {
+
+				Toast.makeText(ShopingCart.this, R.string.network_error,
+						Toast.LENGTH_LONG).show();
+				return;
+			}
+			// check with response
+			try {
+				JSONObject jsonObj = new JSONObject(response);
+				if (jsonObj.getBoolean(Constants.DataKeys.STATUS) == true) {
+					jsonObj = jsonObj.getJSONObject(Constants.DataKeys.DATA);
+					String name = jsonObj.getString("coupon_code");
+					String amount = jsonObj.getString("coupon_amount");
+					couponAmount = Float.parseFloat(amount) * (-1);
+
+					String type = jsonObj.getString("coupon_type");
+					if (type.equalsIgnoreCase(COUPON_TYPE_S)) {
+
+						couponAmount = cartResponse.getConvenienceFee() * (-1);
+					}
+
+					discountGroup.setVisibility(View.VISIBLE);
+					txtCoupan.setText("(" + name + ")");
+					txtDiscountFee.setText("-$"
+							+ Utils.getInstance().convertToDecimalPointString(
+									Math.abs(couponAmount), 2));
+					txtOrderTotal.setText("$"
+							+ Utils.getInstance().convertToDecimalPointString(
+									getTotalWithTips(), 2));
+					txtTotalAmt.setText("$"
+							+ Utils.getInstance().convertToDecimalPointString(
+									getTotalWithTips(), 2));
+				} else {
+					Toast.makeText(ShopingCart.this, R.string.invalide_coupon,
+							Toast.LENGTH_SHORT).show();
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				Toast.makeText(ShopingCart.this, R.string.unknown_error,
+						Toast.LENGTH_SHORT).show();
+				e.printStackTrace();
+			}
+		}
+	}
+}
